@@ -12,8 +12,33 @@ export default function DashboardPage({ onNavigate }) {
   const [adminApp, setAdminApp] = useState(null)
   const barRef = useRef(null)
   const donutRef = useRef(null)
+  const [stats, setStats] = useState(null)
+  const [statsLoading, setStatsLoading] = useState(true)
   
   const totalPages = Math.ceil(total / itemsPerPage)
+
+  // Fetch stats from API
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch('https://api.aiseras.com/aiseras/admin/stats', {
+          headers: {
+            'accept': 'application/json',
+            'x-admin-token': '3eJX4dU1oazZAPPWqZ6nx-LcEycxgWeXZwl7smtJHLpE2oMdLTtWag'
+          }
+        })
+        const data = await response.json()
+        if (data.status === 1) {
+          setStats(data.stats)
+        }
+      } catch (error) {
+        console.error('Error fetching stats:', error)
+      } finally {
+        setStatsLoading(false)
+      }
+    }
+    fetchStats()
+  }, [])
 
   const handleLogout = async () => {
     const result = await Swal.fire({
@@ -99,8 +124,7 @@ export default function DashboardPage({ onNavigate }) {
 
   // Initialize charts using React refs - guaranteed DOM is ready
   useEffect(() => {
-    if (typeof Chart === 'undefined') {
-      console.error('Chart.js not loaded')
+    if (typeof Chart === 'undefined' || !stats) {
       return
     }
 
@@ -112,27 +136,18 @@ export default function DashboardPage({ onNavigate }) {
       window.donutChartInstance.destroy()
     }
 
-    // Initialize Bar Chart
+    // Initialize Bar Chart with media data
     if (barRef.current) {
       window.barChartInstance = new Chart(barRef.current, {
         type: 'bar',
         data: {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+          labels: ['Videos', 'Audios', 'Images'],
           datasets: [
             {
-              label: 'Videos',
-              data: [420, 560, 380, 200, 300, 280],
+              label: 'Total Files',
+              data: [stats.video_files, stats.audio_files, stats.image_files],
               backgroundColor: '#3945eb',
               borderColor: '#3945eb',
-              borderWidth: 1,
-              borderRadius: 8,
-              barPercentage: 0.7,
-            },
-            {
-              label: 'Audios',
-              data: [42, 38, 35, 80, 90, 100],
-              backgroundColor: '#00305c',
-              borderColor: '#00305c',
               borderWidth: 1,
               borderRadius: 8,
               barPercentage: 0.7,
@@ -154,16 +169,17 @@ export default function DashboardPage({ onNavigate }) {
       })
     }
 
-    // Initialize Donut Chart
+    // Initialize Donut Chart with user status data
     if (donutRef.current) {
+      const unverifiedUsers = stats.total_users - stats.verified_users
       window.donutChartInstance = new Chart(donutRef.current, {
         type: 'doughnut',
         data: {
-          labels: ['Active Users', 'Inactive', 'Pending'],
+          labels: ['Verified Users', 'Unverified Users'],
           datasets: [
             {
-              data: [65, 25, 10],
-              backgroundColor: ['#39ab71', '#00305c', '#d4a5b4'],
+              data: [stats.verified_users, unverifiedUsers],
+              backgroundColor: ['#39ab71', '#d4a5b4'],
               borderColor: '#ffffff',
               borderWidth: 3,
             },
@@ -178,7 +194,7 @@ export default function DashboardPage({ onNavigate }) {
         },
       })
     }
-  }, [])
+  }, [stats])
 
   return (
     <div className="admin-app">
@@ -231,9 +247,9 @@ export default function DashboardPage({ onNavigate }) {
             <div className="col-12 col-sm-6 col-lg-3">
               <div className="stat-box" style={{ background: 'linear-gradient(135deg, #ff3570, #871835)' }}>
                 <div>
-                  <h6>Total User</h6>
-                  <h3>{total}</h3>
-                  <p className="small muted mt-2 mb-0">↑ 12% from last month</p>
+                  <h6>Total Users</h6>
+                  <h3>{statsLoading ? '...' : stats?.total_users || 0}</h3>
+                  <p className="small muted mt-2 mb-0">✓ {statsLoading ? '...' : stats?.verified_users || 0} verified</p>
                 </div>
                 <div className="icon-box">
                   <i className="bi bi-person"></i>
@@ -244,8 +260,8 @@ export default function DashboardPage({ onNavigate }) {
               <div className="stat-box" style={{ background: 'linear-gradient(135deg,#00305c,#004a8a)' }}>
                 <div>
                   <h6>Total Videos</h6>
-                  <h3>342</h3>
-                  <p className="small muted mt-2 mb-0">↑ 8% from last month</p>
+                  <h3>{statsLoading ? '...' : stats?.video_files || 0}</h3>
+                  <p className="small muted mt-2 mb-0">Total media: {statsLoading ? '...' : stats?.total_media || 0}</p>
                 </div>
                 <div className="icon-box">
                   <i className="bi bi-camera-video"></i>
@@ -255,9 +271,9 @@ export default function DashboardPage({ onNavigate }) {
             <div className="col-12 col-sm-6 col-lg-3">
               <div className="stat-box" style={{ background: 'linear-gradient(135deg, #39ab71, #21651d)' }}>
                 <div>
-                  <h6>Active Audio</h6>
-                  <h3>200</h3>
-                  <p className="small muted mt-2 mb-0">↑ 24% from last month</p>
+                  <h6>Total Audios</h6>
+                  <h3>{statsLoading ? '...' : stats?.audio_files || 0}</h3>
+                  <p className="small muted mt-2 mb-0">Voices: {statsLoading ? '...' : stats?.total_voices || 0}</p>
                 </div>
                 <div className="icon-box">
                   <i className="bi bi-speaker"></i>
@@ -267,12 +283,12 @@ export default function DashboardPage({ onNavigate }) {
             <div className="col-12 col-sm-6 col-lg-3">
               <div className="stat-box" style={{ background: 'linear-gradient(135deg, #FF5722, #9f3b00)' }}>
                 <div>
-                  <h6>Total Revenue</h6>
-                  <h3>$567K</h3>
-                  <p className="small muted mt-2 mb-0">↑ 5% from last month</p>
+                  <h6>Total Images</h6>
+                  <h3>{statsLoading ? '...' : stats?.image_files || 0}</h3>
+                  <p className="small muted mt-2 mb-0">Avatars: {statsLoading ? '...' : stats?.total_avatars || 0}</p>
                 </div>
                 <div className="icon-box">
-                  <i className="bi bi-credit-card"></i>
+                  <i className="bi bi-image"></i>
                 </div>
               </div>
             </div>

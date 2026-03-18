@@ -1,0 +1,164 @@
+/* Layout containers */
+.admin-app {
+  display: flex;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.content > header {
+  position: fixed;
+  left: var(--sidebar-width);
+  right: 0;
+  top: 0;
+  height: var(--header-height);
+  background: var(--card-bg);
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  z-index: 1031;
+}
+
+.content main {
+  padding-top: calc(var(--header-height) + 1.25rem);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 2rem;
+  flex: 1;
+}
+
+.container-fluid {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -0.5rem;
+  margin-left: -0.5rem;
+}
+
+.g-3 {
+  gap: 1rem;
+}
+
+.mb-3 {
+  margin-bottom: 1rem;
+}
+
+.col-12 {
+  flex: 0 0 100%;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem;
+}
+
+.col-sm-6 {
+  flex: 0 0 100%;
+}
+
+.col-lg-3 {
+  flex: 0 0 100%;
+}
+
+.col-lg-4 {
+  flex: 0 0 100%;
+}
+
+.col-lg-8 {
+  flex: 0 0 100%;
+}
+
+/* Tablet screens */
+@media (min-width: 576px) {
+  .col-sm-6 {
+    flex: 0 0 50%;
+  }
+}
+
+/* Desktop screens */
+@media (min-width: 992px) {
+  .admin-app {
+    margin-left: 0;
+  }
+
+  .content {
+    margin-left: var(--sidebar-width);
+  }
+
+  .content > header {
+    left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+  }
+
+  .col-lg-3 {
+    flex: 0 0 25%;
+  }
+
+  .col-lg-4 {
+    flex: 0 0 33.333333%;
+  }
+
+  .col-lg-8 {
+    flex: 0 0 66.666667%;
+  }
+}
+
+/* Mobile: sidebar hidden by default */
+@media (max-width: 991.98px) {
+  .content > header {
+    left: 0;
+    width: 100%;
+  }
+
+  .content main {
+    padding-top: calc(56px + 1rem);
+  }
+}
+
+/* Collapsed state */
+.admin-app.collapsed .sidebar {
+  width: var(--sidebar-collapsed-width);
+}
+
+.admin-app.collapsed .sidebar .nav-link {
+  justify-content: center;
+}
+
+.admin-app.collapsed .sidebar .nav-link .nav-text {
+  display: none;
+}
+
+/* Sidebar hidden state */
+.admin-app.sidebar-hidden .sidebar {
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+
+.admin-app.sidebar-hidden .content {
+  margin-left: 0;
+}
+
+.admin-app.sidebar-hidden .content > header {
+  left: 0;
+  width: 100%;
+}
+
+/* Mobile sidebar open state */
+.admin-app.sidebar-open .sidebar {
+  transform: translateX(0);
+}
+
+.border-0 {
+  border: 0 !important;
+}
+
+.pb-0 {
+  padding-bottom: 0;
+}

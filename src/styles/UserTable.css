@@ -1,0 +1,15 @@
+.status-active {
+  background: #e6f9f0;
+  color: #0f5132;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+}
+
+.status-inactive {
+  background: #fdecea;
+  color: #842029;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+}

@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import Swal from 'sweetalert2'
 import { useAuth } from '../context/AuthContext'
+import { useUsers } from '../hooks/useUsers'
 
 export default function UserListPage({ onNavigate }) {
   const { admin, logout } = useAuth()
+  const { users, total, loading: usersLoading } = useUsers(0, 50)
   const [adminApp, setAdminApp] = useState(null)
 
   const handleLogout = async () => {
@@ -160,114 +162,44 @@ export default function UserListPage({ onNavigate }) {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td>1</td>
-                        <td>Jane Doe</td>
-                        <td>jane@example.com</td>
-                        <td>12</td>
-                        <td>10</td>
-                        <td>
-                          <span className="status-active">Active</span>
-                        </td>
-                        <td>
-                          <a href="#" className="btn btn-sm btn-success">
-                            <i className="bi bi-pencil"></i>
-                          </a>{' '}
-                          <a href="#" className="btn btn-sm btn-danger">
-                            <i className="bi bi-trash"></i>
-                          </a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>2</td>
-                        <td>John Smith</td>
-                        <td>john@example.com</td>
-                        <td>8</td>
-                        <td>12</td>
-                        <td>
-                          <span className="status-active">Active</span>
-                        </td>
-                        <td>
-                          <a href="#" className="btn btn-sm btn-success">
-                            <i className="bi bi-pencil"></i>
-                          </a>{' '}
-                          <a href="#" className="btn btn-sm btn-danger">
-                            <i className="bi bi-trash"></i>
-                          </a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>3</td>
-                        <td>Priya Kumar</td>
-                        <td>priya@example.com</td>
-                        <td>15</td>
-                        <td>7</td>
-                        <td>
-                          <span className="status-active">Active</span>
-                        </td>
-                        <td>
-                          <a href="#" className="btn btn-sm btn-success">
-                            <i className="bi bi-pencil"></i>
-                          </a>{' '}
-                          <a href="#" className="btn btn-sm btn-danger">
-                            <i className="bi bi-trash"></i>
-                          </a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>4</td>
-                        <td>Aarav Patel</td>
-                        <td>aarav@example.com</td>
-                        <td>10</td>
-                        <td>9</td>
-                        <td>
-                          <span className="status-active">Active</span>
-                        </td>
-                        <td>
-                          <a href="#" className="btn btn-sm btn-success">
-                            <i className="bi bi-pencil"></i>
-                          </a>{' '}
-                          <a href="#" className="btn btn-sm btn-danger">
-                            <i className="bi bi-trash"></i>
-                          </a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>5</td>
-                        <td>Sofia Lee</td>
-                        <td>sofia@example.com</td>
-                        <td>20</td>
-                        <td>8</td>
-                        <td>
-                          <span className="status-active">Active</span>
-                        </td>
-                        <td>
-                          <a href="#" className="btn btn-sm btn-success">
-                            <i className="bi bi-pencil"></i>
-                          </a>{' '}
-                          <a href="#" className="btn btn-sm btn-danger">
-                            <i className="bi bi-trash"></i>
-                          </a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>6</td>
-                        <td>Mohit Singh</td>
-                        <td>mohit@example.com</td>
-                        <td>5</td>
-                        <td>4</td>
-                        <td>
-                          <span className="status-block">Inactive</span>
-                        </td>
-                        <td>
-                          <a href="#" className="btn btn-sm btn-success">
-                            <i className="bi bi-pencil"></i>
-                          </a>{' '}
-                          <a href="#" className="btn btn-sm btn-danger">
-                            <i className="bi bi-trash"></i>
-                          </a>
-                        </td>
-                      </tr>
+                      {usersLoading ? (
+                        <tr>
+                          <td colSpan="7" className="text-center py-4">
+                            <div className="spinner-border spinner-border-sm" role="status">
+                              <span className="visually-hidden">Loading...</span>
+                            </div>
+                          </td>
+                        </tr>
+                      ) : users.length > 0 ? (
+                        users.map((user) => (
+                          <tr key={user.id}>
+                            <td>{user.id}</td>
+                            <td>{user.full_name || 'N/A'}</td>
+                            <td>{user.email}</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>
+                              <span className={user.is_email_verified ? 'status-active' : 'status-block'}>
+                                {user.is_email_verified ? 'Verified' : 'Not Verified'}
+                              </span>
+                            </td>
+                            <td>
+                              <a href="#" className="btn btn-sm btn-success">
+                                <i className="bi bi-pencil"></i>
+                              </a>{' '}
+                              <a href="#" className="btn btn-sm btn-danger">
+                                <i className="bi bi-trash"></i>
+                              </a>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="7" className="text-center py-4">
+                            No users found
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>

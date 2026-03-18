@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 
 export default function DashboardPage({ onNavigate }) {
   const [adminApp, setAdminApp] = useState(null)
+  const barRef = useRef(null)
+  const donutRef = useRef(null)
 
   useEffect(() => {
     const app = document.querySelector('.admin-app')
@@ -60,15 +62,87 @@ export default function DashboardPage({ onNavigate }) {
     }
   }, [])
 
-  // Initialize charts after DOM is ready
+  // Initialize charts using React refs - guaranteed DOM is ready
   useEffect(() => {
-    const chartInitTimer = setTimeout(() => {
-      if (window.initCharts && typeof window.initCharts === 'function') {
-        window.initCharts()
-      }
-    }, 500)
+    if (typeof Chart === 'undefined') {
+      console.error('Chart.js not loaded')
+      return
+    }
 
-    return () => clearTimeout(chartInitTimer)
+    // Destroy old charts if they exist
+    if (window.barChartInstance) {
+      window.barChartInstance.destroy()
+    }
+    if (window.donutChartInstance) {
+      window.donutChartInstance.destroy()
+    }
+
+    // Initialize Bar Chart
+    if (barRef.current) {
+      window.barChartInstance = new Chart(barRef.current, {
+        type: 'bar',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+          datasets: [
+            {
+              label: 'Videos',
+              data: [420, 560, 380, 200, 300, 280],
+              backgroundColor: '#3945eb',
+              borderColor: '#3945eb',
+              borderWidth: 1,
+              borderRadius: 8,
+              barPercentage: 0.7,
+            },
+            {
+              label: 'Audios',
+              data: [42, 38, 35, 80, 90, 100],
+              backgroundColor: '#00305c',
+              borderColor: '#00305c',
+              borderWidth: 1,
+              borderRadius: 8,
+              barPercentage: 0.7,
+            },
+          ],
+        },
+        options: {
+          indexAxis: 'x',
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top' },
+            tooltip: { padding: 12, borderRadius: 6, backgroundColor: 'rgba(0,0,0,0.8)' },
+          },
+          scales: {
+            x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+            y: { grid: { display: false } },
+          },
+        },
+      })
+    }
+
+    // Initialize Donut Chart
+    if (donutRef.current) {
+      window.donutChartInstance = new Chart(donutRef.current, {
+        type: 'doughnut',
+        data: {
+          labels: ['Active Users', 'Inactive', 'Pending'],
+          datasets: [
+            {
+              data: [65, 25, 10],
+              backgroundColor: ['#39ab71', '#00305c', '#d4a5b4'],
+              borderColor: '#ffffff',
+              borderWidth: 3,
+            },
+          ],
+        },
+        options: {
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', padding: 20 },
+            tooltip: { padding: 12, borderRadius: 6, backgroundColor: 'rgba(0,0,0,0.8)' },
+          },
+        },
+      })
+    }
   }, [])
 
   return (
@@ -175,7 +249,7 @@ export default function DashboardPage({ onNavigate }) {
                 <div className="card-body">
                   <h5 className="card-title mb-4">Overview video/audio</h5>
                   <div style={{ height: '320px' }}>
-                    <canvas id="barChart"></canvas>
+                    <canvas ref={barRef}></canvas>
                   </div>
                 </div>
               </div>
@@ -185,7 +259,7 @@ export default function DashboardPage({ onNavigate }) {
                 <div className="card-body">
                   <h5 className="card-title mb-4">User Status</h5>
                   <div style={{ height: '320px' }}>
-                    <canvas id="donutChart"></canvas>
+                    <canvas ref={donutRef}></canvas>
                   </div>
                 </div>
               </div>

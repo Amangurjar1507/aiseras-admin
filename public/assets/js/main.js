@@ -119,42 +119,8 @@
     }
   }
 
-  // Expose initChart globally so React can call it
-  window.initCharts = initChart;
-
-  // Try init chart after short delay (Chart.js loaded via CDN)
-  setTimeout(function(){
-    initChart();
-  }, 250);
-
-  // Also try again after a bit longer in case React hasn't mounted yet
-  setTimeout(function(){
-    initChart();
-  }, 1000);
-
-  // Watch for canvas elements being added to DOM and init charts
-  const observer = new MutationObserver(function(mutations){
-    const hasCanvas = document.getElementById('barChart') || document.getElementById('donutChart');
-    if(hasCanvas){
-      // Clear previous charts if any exist
-      const barCanvas = document.getElementById('barChart');
-      const donutCanvas = document.getElementById('donutChart');
-      
-      // Destroy existing chart instances if they exist
-      if(window.barChartInstance){
-        window.barChartInstance.destroy();
-      }
-      if(window.donutChartInstance){
-        window.donutChartInstance.destroy();
-      }
-      
-      // Re-init charts
-      initChart();
-      observer.disconnect();
-    }
-  });
-
-  observer.observe(document.body, {childList: true, subtree: true});
+  // Note: Chart.js initialization is now handled by React in DashboardPage.jsx
+  // This ensures proper DOM lifecycle and ref management
 
   // Initialize DataTables (Simple-DataTables) for tables with class `datatable`
   function initDataTables(){

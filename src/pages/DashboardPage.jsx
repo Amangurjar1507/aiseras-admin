@@ -310,6 +310,9 @@ export default function DashboardPage({ onNavigate }) {
                           <th>#</th>
                           <th>Name</th>
                           <th>Email</th>
+                          <th>Age</th>
+                          <th>Gender</th>
+                          <th>Joined</th>
                           <th>Status</th>
                           <th>Actions</th>
                         </tr>
@@ -317,7 +320,7 @@ export default function DashboardPage({ onNavigate }) {
                       <tbody>
                         {usersLoading ? (
                           <tr>
-                            <td colSpan="5" className="text-center py-4">
+                            <td colSpan="8" className="text-center py-4">
                               <div className="spinner-border spinner-border-sm" role="status">
                                 <span className="visually-hidden">Loading...</span>
                               </div>
@@ -329,6 +332,9 @@ export default function DashboardPage({ onNavigate }) {
                               <td>{user.id}</td>
                               <td>{user.full_name || 'N/A'}</td>
                               <td>{user.email}</td>
+                              <td>{user.age || 'N/A'}</td>
+                              <td>{user.gender || 'N/A'}</td>
+                              <td>{new Date(user.created_at).toLocaleDateString()}</td>
                               <td>
                                 <span className={user.is_email_verified ? 'status-active' : 'status-block'}>
                                   {user.is_email_verified ? 'Verified' : 'Not Verified'}
@@ -346,7 +352,7 @@ export default function DashboardPage({ onNavigate }) {
                           ))
                         ) : (
                           <tr>
-                            <td colSpan="5" className="text-center py-4">
+                            <td colSpan="8" className="text-center py-4">
                               No users found
                             </td>
                           </tr>

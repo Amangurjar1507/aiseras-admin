@@ -190,12 +190,12 @@ export default function UserListPage({ onNavigate }) {
                               </span>
                             </td>
                             <td>
-                              <button className="btn btn-sm btn-success" disabled title="Edit is disabled">
-                                <i className="bi bi-pencil"></i>
+                              <button className="btn btn-sm btn-success" title="Enable user">
+                                <i className="bi bi-check-circle"></i> Enable
                               </button>
                               {' '}
-                              <button className="btn btn-sm btn-danger" disabled title="Delete is disabled">
-                                <i className="bi bi-trash"></i>
+                              <button className="btn btn-sm btn-secondary" title="Disable user">
+                                <i className="bi bi-x-circle"></i> Disable
                               </button>
                             </td>
                           </tr>

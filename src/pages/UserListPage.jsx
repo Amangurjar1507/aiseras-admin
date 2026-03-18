@@ -1,7 +1,35 @@
 import { useEffect, useState } from 'react'
+import Swal from 'sweetalert2'
+import { useAuth } from '../context/AuthContext'
 
 export default function UserListPage({ onNavigate }) {
+  const { admin, logout } = useAuth()
   const [adminApp, setAdminApp] = useState(null)
+
+  const handleLogout = async () => {
+    const result = await Swal.fire({
+      icon: 'warning',
+      title: 'Logout?',
+      text: 'Are you sure you want to logout?',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, logout',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+    })
+
+    if (result.isConfirmed) {
+      logout()
+      onNavigate('login')
+      Swal.fire({
+        icon: 'success',
+        title: 'Logged Out',
+        text: 'You have been logged out successfully.',
+        timer: 1500,
+        timerProgressBar: true,
+      })
+    }
+  }
 
   useEffect(() => {
     const app = document.querySelector('.admin-app')
@@ -75,7 +103,7 @@ export default function UserListPage({ onNavigate }) {
             <i className="bi bi-person"></i>
             <span className="nav-text">User List</span>
           </a>
-          <a href="?page=login" className="nav-link d-flex align-items-center">
+          <a href="#" onClick={(e) => { e.preventDefault(); handleLogout(); }} className="nav-link d-flex align-items-center">
             <i className="bi bi-box-arrow-in-right"></i>
             <span className="nav-text">Log Out</span>
           </a>
@@ -93,7 +121,7 @@ export default function UserListPage({ onNavigate }) {
             <div className="d-flex align-items-center gap-3">
               <div className="dropdown">
                 <a className="d-flex align-items-center text-decoration-none dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                  <div className="avatar">A</div>
+                  <div className="avatar">{admin?.full_name?.charAt(0)?.toUpperCase() || 'A'}</div>
                 </a>
                 <ul className="dropdown-menu dropdown-menu-end">
                   <li>
@@ -102,7 +130,7 @@ export default function UserListPage({ onNavigate }) {
                     </a>
                   </li>
                   <li>
-                    <a className="dropdown-item" href="?page=login">
+                    <a className="dropdown-item" href="#" onClick={(e) => { e.preventDefault(); handleLogout(); }}>
                       Sign out
                     </a>
                   </li>

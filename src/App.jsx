@@ -1,34 +1,26 @@
 import { useState, useEffect } from 'react'
-import Login from './pages/Login'
-import Dashboard from './pages/Dashboard'
-import UserList from './pages/UserList'
+import LoginPage from './pages/LoginPage'
+import DashboardPage from './pages/DashboardPage'
+import UserListPage from './pages/UserListPage'
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return localStorage.getItem('isAuthenticated') === 'true'
+  const [currentPage, setCurrentPage] = useState(() => {
+    const page = new URLSearchParams(window.location.search).get('page') || 'dashboard'
+    return page
   })
-  const [currentPage, setCurrentPage] = useState('dashboard')
 
-  const handleLogin = () => {
-    setIsAuthenticated(true)
-    localStorage.setItem('isAuthenticated', 'true')
+  const handleNavigate = (page) => {
+    setCurrentPage(page)
+    window.history.replaceState(null, '', `?page=${page}`)
   }
 
-  const handleLogout = () => {
-    setIsAuthenticated(false)
-    localStorage.removeItem('isAuthenticated')
-    setCurrentPage('dashboard')
-  }
-
-  if (!isAuthenticated) {
-    return <Login onLogin={handleLogin} />
-  }
-
-  if (currentPage === 'users') {
-    return <UserList onLogout={handleLogout} onNavigate={setCurrentPage} />
-  }
-
-  return <Dashboard onLogout={handleLogout} onNavigate={setCurrentPage} />
+  return (
+    <>
+      {currentPage === 'login' && <LoginPage onNavigate={handleNavigate} />}
+      {currentPage === 'dashboard' && <DashboardPage onNavigate={handleNavigate} />}
+      {currentPage === 'users' && <UserListPage onNavigate={handleNavigate} />}
+    </>
+  )
 }
 
 export default App

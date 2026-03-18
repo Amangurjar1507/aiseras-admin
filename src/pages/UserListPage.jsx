@@ -10,7 +10,7 @@ export default function UserListPage({ onNavigate }) {
   const skip = (currentPage - 1) * itemsPerPage
   const { users, total, loading: usersLoading } = useUsers(skip, itemsPerPage)
   const [adminApp, setAdminApp] = useState(null)
-  
+
   const totalPages = Math.ceil(total / itemsPerPage)
 
   const handleLogout = async () => {
@@ -78,7 +78,6 @@ export default function UserListPage({ onNavigate }) {
     document.addEventListener('click', handleClickOutside)
     window.addEventListener('resize', handleResize)
 
-    // Mark active link
     const links = document.querySelectorAll('.sidebar .nav-link')
     links.forEach((l) => {
       l.classList.remove('active')
@@ -193,7 +192,8 @@ export default function UserListPage({ onNavigate }) {
                             <td>
                               <button className="btn btn-sm btn-success" disabled title="Edit is disabled">
                                 <i className="bi bi-pencil"></i>
-                              </button>{' '}
+                              </button>
+                              {' '}
                               <button className="btn btn-sm btn-danger" disabled title="Delete is disabled">
                                 <i className="bi bi-trash"></i>
                               </button>
@@ -210,7 +210,6 @@ export default function UserListPage({ onNavigate }) {
                     </tbody>
                   </table>
                 </div>
-                {/* Pagination */}
                 <nav aria-label="Table pagination" className="d-flex justify-content-between align-items-center" style={{ padding: '1rem', borderTop: '1px solid #eee' }}>
                   <div className="text-muted small">
                     Showing {users.length > 0 ? skip + 1 : 0} to {Math.min(skip + itemsPerPage, total)} of {total} users
@@ -246,10 +245,6 @@ export default function UserListPage({ onNavigate }) {
                     </li>
                   </ul>
                 </nav>
-              </div>
-            </div>
-          </div>
-        </div>
               </div>
             </div>
           </div>

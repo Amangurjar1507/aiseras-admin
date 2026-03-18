@@ -319,13 +319,12 @@ export default function DashboardPage({ onNavigate }) {
                           <th>Gender</th>
                           <th>Joined</th>
                           <th>Status</th>
-                          <th>Actions</th>
                         </tr>
                       </thead>
                       <tbody>
                         {usersLoading ? (
                           <tr>
-                            <td colSpan="8" className="text-center py-4">
+                            <td colSpan="7" className="text-center py-4">
                               <div className="spinner-border spinner-border-sm" role="status">
                                 <span className="visually-hidden">Loading...</span>
                               </div>
@@ -345,19 +344,11 @@ export default function DashboardPage({ onNavigate }) {
                                   {user.is_email_verified ? 'Verified' : 'Not Verified'}
                                 </span>
                               </td>
-                              <td>
-                                <button className="btn btn-sm btn-success" disabled title="Edit is disabled">
-                                  <i className="bi bi-pencil"></i>
-                                </button>{' '}
-                                <button className="btn btn-sm btn-danger" disabled title="Delete is disabled">
-                                  <i className="bi bi-trash"></i>
-                                </button>
-                              </td>
                             </tr>
                           ))
                         ) : (
                           <tr>
-                            <td colSpan="8" className="text-center py-4">
+                            <td colSpan="7" className="text-center py-4">
                               No users found
                             </td>
                           </tr>

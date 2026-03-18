@@ -10,6 +10,7 @@ export default function UserListPage({ onNavigate }) {
   const skip = (currentPage - 1) * itemsPerPage
   const { users, total, loading: usersLoading } = useUsers(skip, itemsPerPage)
   const [adminApp, setAdminApp] = useState(null)
+  const [userStatus, setUserStatus] = useState({})
 
   const totalPages = Math.ceil(total / itemsPerPage)
 
@@ -190,13 +191,18 @@ export default function UserListPage({ onNavigate }) {
                               </span>
                             </td>
                             <td>
-                              <button className="btn btn-sm btn-success" title="Enable user">
-                                <i className="bi bi-check-circle"></i> Enable
-                              </button>
-                              {' '}
-                              <button className="btn btn-sm btn-secondary" title="Disable user">
-                                <i className="bi bi-x-circle"></i> Disable
-                              </button>
+                              <div className="form-check form-switch">
+                                <input 
+                                  className="form-check-input" 
+                                  type="checkbox" 
+                                  id={`toggle-${user.id}`}
+                                  checked={userStatus[user.id] !== false}
+                                  onChange={(e) => setUserStatus({...userStatus, [user.id]: e.target.checked})}
+                                />
+                                <label className="form-check-label" htmlFor={`toggle-${user.id}`}>
+                                  {userStatus[user.id] !== false ? 'Enabled' : 'Disabled'}
+                                </label>
+                              </div>
                             </td>
                           </tr>
                         ))

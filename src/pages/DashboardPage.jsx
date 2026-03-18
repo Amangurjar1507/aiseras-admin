@@ -5,10 +5,15 @@ import { useUsers } from '../hooks/useUsers'
 
 export default function DashboardPage({ onNavigate }) {
   const { admin, logout } = useAuth()
-  const { users, total, loading: usersLoading } = useUsers(0, 7)
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 7
+  const skip = (currentPage - 1) * itemsPerPage
+  const { users, total, loading: usersLoading } = useUsers(skip, itemsPerPage)
   const [adminApp, setAdminApp] = useState(null)
   const barRef = useRef(null)
   const donutRef = useRef(null)
+  
+  const totalPages = Math.ceil(total / itemsPerPage)
 
   const handleLogout = async () => {
     const result = await Swal.fire({
@@ -356,14 +361,50 @@ export default function DashboardPage({ onNavigate }) {
                               No users found
                             </td>
                           </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
+                      )}
+                    </tbody>
+                  </table>
                 </div>
+                {/* Pagination */}
+                <nav aria-label="Table pagination" className="d-flex justify-content-between align-items-center" style={{ padding: '1rem', borderTop: '1px solid #eee' }}>
+                  <div className="text-muted small">
+                    Showing {users.length > 0 ? skip + 1 : 0} to {Math.min(skip + itemsPerPage, total)} of {total} users
+                  </div>
+                  <ul className="pagination mb-0">
+                    <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                      <button 
+                        className="page-link" 
+                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                        disabled={currentPage === 1}
+                      >
+                        Previous
+                      </button>
+                    </li>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                      <li key={page} className={`page-item ${currentPage === page ? 'active' : ''}`}>
+                        <button 
+                          className="page-link" 
+                          onClick={() => setCurrentPage(page)}
+                        >
+                          {page}
+                        </button>
+                      </li>
+                    ))}
+                    <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                      <button 
+                        className="page-link" 
+                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                        disabled={currentPage === totalPages}
+                      >
+                        Next
+                      </button>
+                    </li>
+                  </ul>
+                </nav>
               </div>
             </div>
           </div>
+        </div>
         </main>
       </div>
     </div>

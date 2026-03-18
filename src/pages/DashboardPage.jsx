@@ -60,6 +60,17 @@ export default function DashboardPage({ onNavigate }) {
     }
   }, [])
 
+  // Initialize charts after DOM is ready
+  useEffect(() => {
+    const chartInitTimer = setTimeout(() => {
+      if (window.initCharts && typeof window.initCharts === 'function') {
+        window.initCharts()
+      }
+    }, 500)
+
+    return () => clearTimeout(chartInitTimer)
+  }, [])
+
   return (
     <div className="admin-app">
       <aside id="sidebar" className="sidebar">

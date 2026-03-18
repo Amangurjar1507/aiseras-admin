@@ -2,17 +2,6 @@ import { useEffect } from 'react'
 
 export default function Chart({ type, id }) {
   useEffect(() => {
-    // Load Chart.js from CDN
-    const script = document.createElement('script')
-    script.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js'
-    script.async = true
-
-    script.onload = () => {
-      initChart()
-    }
-
-    document.body.appendChild(script)
-
     const initChart = () => {
       const canvas = document.getElementById(id)
       if (!canvas || !window.Chart) return
@@ -83,11 +72,12 @@ export default function Chart({ type, id }) {
       }
     }
 
-    return () => {
-      if (document.body.contains(script)) {
-        document.body.removeChild(script)
-      }
-    }
+    // Wait a bit for Chart.js to load
+    const timer = setTimeout(() => {
+      initChart()
+    }, 250)
+
+    return () => clearTimeout(timer)
   }, [type, id])
 
   return <canvas id={id}></canvas>

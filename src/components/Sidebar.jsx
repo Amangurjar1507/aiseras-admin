@@ -1,5 +1,4 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-import '../styles/Sidebar.css'
 
 export default function Sidebar({ isOpen }) {
   const navigate = useNavigate()
@@ -16,7 +15,7 @@ export default function Sidebar({ isOpen }) {
   }
 
   return (
-    <aside className="sidebar">
+    <aside className="sidebar" id="sidebar">
       <div className="p-3 sidebar-header d-flex align-items-center gap-2">
         <div className="fw-bold ms-2">Admin</div>
       </div>

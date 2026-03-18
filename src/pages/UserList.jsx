@@ -1,12 +1,36 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Sidebar from '../components/Sidebar'
 import Header from '../components/Header'
 import UserTable from '../components/UserTable'
-import '../styles/Dashboard.css'
 
 export default function UserList() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [sidebarHidden, setSidebarHidden] = useState(false)
+
+  useEffect(() => {
+    const saved = localStorage.getItem('cv_admin_sidebar_hidden')
+    if (saved === '1') {
+      setSidebarHidden(true)
+    }
+  }, [])
+
+  useEffect(() => {
+    // Close sidebar when clicking outside on mobile
+    const handleClickOutside = (e) => {
+      if (window.innerWidth < 992) {
+        const sidebar = document.getElementById('sidebar')
+        const toggleBtn = document.getElementById('toggleBtn')
+        if (sidebar && toggleBtn && !sidebar.contains(e.target) && !toggleBtn.contains(e.target)) {
+          if (isSidebarOpen) {
+            setIsSidebarOpen(false)
+          }
+        }
+      }
+    }
+
+    document.addEventListener('click', handleClickOutside)
+    return () => document.removeEventListener('click', handleClickOutside)
+  }, [isSidebarOpen])
 
   const handleToggleSidebar = () => {
     if (window.innerWidth >= 992) {

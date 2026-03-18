@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import '../styles/UserTable.css'
+import { useState, useEffect, useRef } from 'react'
 
 export default function UserTable() {
   const [users] = useState([
@@ -10,6 +9,33 @@ export default function UserTable() {
     { id: 5, name: 'Sofia Lee', email: 'sofia@example.com', videos: 20, audios: 8, status: 'Active' },
     { id: 6, name: 'Mohit Singh', email: 'mohit@example.com', videos: 5, audios: 4, status: 'Inactive' }
   ])
+  const tableRef = useRef(null)
+
+  useEffect(() => {
+    const initDataTable = () => {
+      const table = tableRef.current
+      if (!table || !window.simpleDatatables || !window.simpleDatatables.DataTable) return
+      
+      try {
+        if (!table.dataset.dtInit) {
+          new window.simpleDatatables.DataTable(table, {
+            searchable: true,
+            fixedHeight: false,
+            perPage: 10,
+            sortable: false,
+            labels: { placeholder: 'Search...', perPage: '{select} entries per page' },
+            noRowsLabel: 'No records found'
+          })
+          table.dataset.dtInit = '1'
+        }
+      } catch (e) {
+        console.log('DataTable init error:', e)
+      }
+    }
+
+    const timer = setTimeout(initDataTable, 300)
+    return () => clearTimeout(timer)
+  }, [users])
 
   const handleEdit = (id) => {
     console.log('Edit user:', id)
@@ -21,7 +47,7 @@ export default function UserTable() {
 
   return (
     <div className="table-responsive">
-      <table className="table datatable">
+      <table className="table datatable" ref={tableRef}>
         <thead>
           <tr>
             <th>#</th>

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import '../styles/Login.css'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -10,28 +9,27 @@ export default function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault()
-    // Simple validation
     if (email && password) {
       navigate('/dashboard')
     }
   }
 
   return (
-    <div className="login-container">
-      <div className="login-card">
+    <div className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
+      <div className="card login-card">
         <div className="card-body">
-          <div className="text-center mb-3">
-            <div className="logo-placeholder">MA</div>
+          <div className="text-center mb-4">
+            <img src="/assets/images/logo.png" alt="Logo" className="logo" style={{ height: '44px', marginBottom: '1rem' }} />
           </div>
           <h5 className="card-title text-center">Admin Login</h5>
 
           <form onSubmit={handleLogin}>
             <div className="mb-3">
-              <label className="form-label">Email</label>
+              <label className="form-label">Email Address</label>
               <input
                 type="email"
                 className="form-control"
-                placeholder="admin@example.com"
+                placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -42,28 +40,26 @@ export default function Login() {
               <input
                 type="password"
                 className="form-control"
-                placeholder="••••••"
+                placeholder="Enter password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
             <div className="mb-3">
-              <label className="form-label">
+              <label className="form-check-label">
                 <input
                   type="checkbox"
+                  className="form-check-input"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  style={{ marginRight: '0.5rem' }}
                 />
-                Remember Me
+                Remember me
               </label>
             </div>
-            <div className="d-flex justify-content-between align-items-center">
-              <button type="submit" className="btn btn-primary w-100">
-                Login
-              </button>
-            </div>
+            <button type="submit" className="btn btn-primary w-100">
+              Sign In
+            </button>
           </form>
         </div>
       </div>

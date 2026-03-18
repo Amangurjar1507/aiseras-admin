@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom'
-import '../styles/Header.css'
 
 export default function Header({ onToggleSidebar, title }) {
   const navigate = useNavigate()
@@ -16,6 +15,7 @@ export default function Header({ onToggleSidebar, title }) {
             id="toggleBtn"
             className="btn btn-sm btn-outline-secondary me-2"
             onClick={onToggleSidebar}
+            style={{ cursor: 'pointer' }}
           >
             <i className="bi bi-list"></i>
           </button>
